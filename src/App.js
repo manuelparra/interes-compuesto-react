@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Formik, Form } from 'formik'; 
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import Input from './components/Input';
 import Button from './components/Button';
 import Container from './components/Container';
@@ -15,11 +16,11 @@ const compoundInterest = (deposit, contribution, years, rate) => {
   return Math.round(total);
 }
 
-const formatter = new Intl.NumberFormat('es-SN', {
+const formatter = new Intl.NumberFormat('es', {
   style: 'currency', 
   currency: 'EUR', 
-  minumFractionDigits: 2,
-  maximunFractionDigits: 2,
+  minimumFractionDigits: 2,
+  maximunFractionDigits: 2, 
 });
 
 const App = () => {
@@ -40,6 +41,26 @@ const App = () => {
             rate: '',
           }}
           onSubmit={handleSubmit}
+          validationSchema={Yup.object({
+            deposit: Yup
+              .number()
+              .required('Requerido')
+              .typeError('Debe ser un número'),
+            contribution: Yup
+              .number()
+              .required('Requerido')
+              .typeError('Debe ser un número'),
+            years: Yup
+              .number()
+              .required('Requerido')
+              .typeError('Debe ser un número'),
+            rate: Yup
+              .number()
+              .required('Requerido')
+              .typeError('Debe ser un número')
+              .min(0, 'El valor minimo es cero')
+              .max(1, 'El valor máximo es 1'),
+          })}
         >
           <Form>
             <Input name="deposit" label="Depósito inicial" />
